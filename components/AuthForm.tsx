@@ -4,18 +4,21 @@ import { z } from "zod";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import { auth } from "@/firebase/client";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
+import { signIn, signUp } from "@/lib/actions/auth.action";
 import FormField from "./FormField";
-import { signUp, signIn } from "@/lib/actions/auth.action";
-import { auth } from "@/firebase/client";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
@@ -39,10 +42,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    
     try {
       if (type === "sign-up") {
-        
         const { name, email, password } = data;
 
         const userCredential = await createUserWithEmailAndPassword(
@@ -61,12 +62,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
         if (!result.success) {
           toast.error(result.message);
           return;
-        }  
+        }
 
         toast.success("Account created successfully. Please sign in.");
         router.push("/sign-in");
       } else {
-        
         const { email, password } = data;
 
         const userCredential = await signInWithEmailAndPassword(
