@@ -153,7 +153,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             {!isSignIn ? "Sign In" : "Sign Up"}
           </Link>
         </p>
-      </div>
+      </div>  
     </div>
   );
 };
